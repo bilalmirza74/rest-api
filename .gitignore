@@ -1,4 +1,4 @@
-
+pass.txt
 .env*
 .flaskenv*
 !.env.project
