@@ -9,7 +9,7 @@ const start = async () => {
         await connectDB(process.env.MONGODB_URL);
         await Product.create(ProductJson);
         console.log("success")
-    }catch (error){
+    } catch (error) {
         console.log(error);
     }
 };
