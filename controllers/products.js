@@ -1,8 +1,15 @@
 const Product = require("../models/product");
 
 const getAllProducts = async (req, res) => {
+    const { company } = req.query;
+    const queryObject = {};
+
+    if (company) {
+        queryObject.company = company;
+    }
+    
     try {
-        const myData = await Product.find(req.query);
+        const myData = await Product.find(queryObject);
         res.status(200).json({ success: true, data: myData });
     } catch (error) {
         console.error("Error fetching all products:", error.message);
