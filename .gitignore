@@ -1,5 +1,8 @@
-.pass.txt
+# Ignore all .env files except .env.project and .env.vault
 .env*
-.flaskenv*
 !.env.project
 !.env.vault
+
+# Ignore all files with the following extensions
+*.txt
+*.flaskenv
