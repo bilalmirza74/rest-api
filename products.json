@@ -1,34 +1,37 @@
 [
   {
-    "name": "iphone",
-    "price": 154,
+    "name": "new_phone",
+    "price": 300,
     "featured": true,
-    "company": "apple"
+    "company": "mi"
   },
   {
-    "name": "iphone10",
-    "price": 174,
+    "name": "latest_phone",
+    "price": 400,
+    "featured": false,
+    "company": "mi"
+  },
+  {
+    "name": "budget_phone",
+    "price": 150,
     "featured": true,
-    "company": "apple"
+    "company": "mi"
   },
   {
-    "name": "iphone11",
-    "price": 190,
-    "company": "apple"
+    "name": "smart_watch",
+    "price": 80,
+    "featured": false,
+    "company": "mi"
   },
   {
-    "name": "watch",
-    "price": 50,
-    "company": "apple"
+    "name": "fitness_watch",
+    "price": 90,
+    "featured": true,
+    "company": "mi"
   },
   {
-    "name": "watch10",
-    "price": 60,
-    "company": "apple"
-  },
-  {
-    "name": "dell laptop",
-    "price": 2000,
+    "name": "powerful_laptop",
+    "price": 2500,
     "featured": true,
     "company": "dell"
   }

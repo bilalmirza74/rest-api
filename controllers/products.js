@@ -14,7 +14,7 @@ const getAllProductsTesting = async (req, res) => {
     try {
         const myData = await Product.find(req.query);
         console.log(
-            "~file: product.js ~ line 10 ~ getAllProductsTesting ~ req.query",
+            "~file: product.js ~ getAllProductsTesting ~ req.query",
             req.query
         );
         res.status(200).json({ success: true, data: myData });
