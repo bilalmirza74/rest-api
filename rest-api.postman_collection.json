@@ -1,0 +1,51 @@
+{
+	"info": {
+		"_postman_id": "7fa61685-1d4b-45a7-a84d-46fced9f778a",
+		"name": "rest-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24833736"
+	},
+	"item": [
+		{
+			"name": "api-test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/products/testing",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"products",
+						"testing"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api-products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
