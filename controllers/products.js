@@ -4,14 +4,14 @@ const getAllProducts = async (req, res) => {
     const { company, name, featured, sort, select } = req.query;
     const queryObject = {};
 
-    if (featured){
-        queryObject.featured = featured;
+    if (featured !== undefined && featured !== '') {
+        queryObject.featured = featured === 'true';
     }
-    if (company) {
+    if (company && company.trim() !== '') {
         queryObject.company = company;
     }
-    if(name){
-        queryObject.name = {$regex: name, $options: "i"};
+    if(name && name.trim() !== ''){
+        queryObject.name = {$regex: name, $options: 'i'};
     }
 
     let apiData = Product.find(queryObject);

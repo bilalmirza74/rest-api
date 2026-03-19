@@ -78,6 +78,13 @@ async function loadProducts() {
         if (data.success) {
             displayProducts(data.data);
             updatePagination(data.data.length);
+            
+            // If no products returned and we're not on page 1, go back to previous page
+            if (data.data.length === 0 && currentPage > 1) {
+                currentPage--;
+                loadProducts();
+                return;
+            }
         } else {
             showError('Failed to load products');
         }
@@ -108,7 +115,7 @@ function displayProducts(products) {
     products.forEach(product => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${product.name}</td>
+            <td>${product.name.replace(/_/g, ' ')}</td>
             <td><span style="text-transform: capitalize;">${product.company}</span></td>
             <td>$${product.price.toFixed(2)}</td>
             <td>
@@ -128,7 +135,7 @@ function displayProducts(products) {
                     <button class="action-btn edit-btn" onclick="editProduct('${product._id}')">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="action-btn delete-btn" onclick="deleteProduct('${product._id}', '${product.name}')">
+                    <button class="action-btn delete-btn" onclick="deleteProduct('${product._id}', '${product.name.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/_/g, ' ')}')">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
@@ -141,7 +148,13 @@ function displayProducts(products) {
 // Handle search input
 function handleSearch() {
     const query = searchInput.value.trim();
-    currentFilters.name = query || undefined;
+    
+    if (query) {
+        currentFilters.name = query;
+    } else {
+        delete currentFilters.name;
+    }
+    
     currentPage = 1;
     loadProducts();
 }
@@ -151,8 +164,20 @@ function handleFilters() {
     const company = companyFilter.value;
     const sort = sortSelect.value;
 
-    currentFilters.company = company || undefined;
-    currentFilters.sort = sort || undefined;
+    // Update filters - remove company filter if "All Companies" is selected
+    if (company) {
+        currentFilters.company = company;
+    } else {
+        delete currentFilters.company;
+    }
+
+    // Update sort filter
+    if (sort) {
+        currentFilters.sort = sort;
+    } else {
+        delete currentFilters.sort;
+    }
+
     currentPage = 1;
     loadProducts();
 }
@@ -168,7 +193,8 @@ function changePage(page) {
 function updatePagination(productCount) {
     pageInfo.textContent = `Page ${currentPage}`;
     prevBtn.disabled = currentPage === 1;
-    nextBtn.disabled = productCount < 10; // Assuming limit is 10
+    // Always enable next button - let the API handle invalid pages
+    nextBtn.disabled = false;
 }
 
 // Open modal for adding/editing
@@ -190,19 +216,21 @@ function openModal(product = null) {
 }
 
 // Edit product
-function editProduct(productId) {
-    // For demo purposes, we'll create a mock product object
-    // In a real app, you'd fetch the product details from the API
-    const mockProduct = {
-        _id: productId,
-        name: 'Sample Product',
-        price: 99.99,
-        company: 'apple',
-        rating: 4.5,
-        featured: true
-    };
+async function editProduct(productId) {
+    try {
+        // Fetch the actual product details from the API
+        const response = await fetch(`${API_BASE}/${productId}`);
+        const data = await response.json();
 
-    openModal(mockProduct);
+        if (data.success) {
+            openModal(data.data);
+        } else {
+            showError('Failed to fetch product details');
+        }
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        showError('Failed to fetch product details');
+    }
 }
 
 // Delete product
@@ -236,13 +264,39 @@ async function performDelete(productId) {
 async function handleFormSubmit(e) {
     e.preventDefault();
 
+    const form = document.getElementById('productForm');
+    
+    // Check if form is valid
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
     const formData = {
-        name: document.getElementById('productName').value,
+        name: document.getElementById('productName').value.trim(),
         price: parseFloat(document.getElementById('productPrice').value),
         company: document.getElementById('productCompany').value,
         rating: parseFloat(document.getElementById('productRating').value),
         featured: document.getElementById('productFeatured').checked
     };
+
+    // Additional validation
+    if (!formData.name) {
+        showError('Product name is required');
+        return;
+    }
+    if (isNaN(formData.price) || formData.price <= 0) {
+        showError('Please enter a valid price');
+        return;
+    }
+    if (!formData.company) {
+        showError('Please select a company');
+        return;
+    }
+    if (isNaN(formData.rating) || formData.rating < 0 || formData.rating > 5) {
+        showError('Please enter a valid rating between 0 and 5');
+        return;
+    }
 
     try {
         let response;
